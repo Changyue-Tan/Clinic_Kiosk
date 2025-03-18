@@ -1,0 +1,101 @@
+char temp_name[10];
+char Patient_Name[10];
+
+char Patients_Queue[2560];
+char *Next_Patient = Patients_Queue;
+char *Last_Patient = Patients_Queue + 10;
+char *Space_For_New_Patient = Patients_Queue + 10;
+int Next_Patient_Number = 0;
+int Last_Patient_Number = 0;
+
+long Temp_Counter = 0;
+long Seconds_Counter = 0;
+int Blink_Timer = 0;
+
+int Entry_Mode_Flag = 0;
+int Entry_Confirm_Flag = 0;
+
+char *Entry_Mode_Prompt = "Enter Name"; 
+char *Entry_Mode_Complete_Message = "Your Number Is";
+char *Display_Mode_Message = "Next Patient";
+
+long key_offsets[8] = { &key2_letters,
+                        &key3_letters,
+                        &key4_letters,
+                        &key5_letters,
+                        &key6_letters,
+                        &key7_letters,
+                        &key8_letters,
+                        &key9_letters,
+                        }
+
+struct keyN_letters {
+    int number_of_letter_can_be_index_by_this_key = 3;
+    char *letter_literals_of_this_key = {'A', 'B', 'C'};
+}
+...
+
+Interrupt_0():
+    start of interrupt:
+	if (no next patient):
+        return from interrupt;
+    display_next_patient();
+    while (1) {
+        if (time elapsed < 10) {
+            do pattern_a;
+        } elses {
+            do pattern_b
+        }
+        if (canclation or patient arrives) {
+            break;
+        }
+    }
+    if (patient arrives) {
+        go to end of interupt
+    } else if (canclation) {
+        do pattern C
+        go to start of interupt
+    }
+
+    end of interrupt:
+    if (Entry_Mode_Flag) {
+        print entry mode msg to LCD
+    } else if (Entry_Confirm_Flag) {
+        print entry confirm msg to LCD
+    }
+
+Timer_interrupt_0() {
+    Temp_Counter ++;
+    if (Temp_Counter == 500) {
+        Blink_Timer++;
+    } else if (Temp_Counter == 1000) {
+        Blink_Timer++;
+        Seconds_Counter++;
+        Temp_Counter = 0
+    }
+    display remain time to LED bar
+}
+
+Main(){
+    while (1) {
+        display_next_patient();
+        waiting for key pad input
+        if (keypad input == 'A') {
+            entry_mode();
+        }
+    }
+}
+
+entry_mode() {
+    while not ('D' is pressed) {
+        take input from keypad
+        Entry_Mode_Flag = 1
+        print(Entry_Mode_Complete_Message)
+        print whatever is entering by patient
+    }
+    Entry_Mode_Flag = 0
+    Entry_Confirm_Flag = 1
+    print(Entry_Mode_Complete_Message)
+    print(last patient info)
+    Entry_Confirm_Flag = 0
+}
